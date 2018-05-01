@@ -3,21 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+package Control;
 
 /**
  *
  * @author Gabriel Guimarães
  */
-public class SecondThread extends Thread implements Runnable {
-
-    public SecondThread() {
-        super();
-    }
-
-    public void run() {
-    }
+public class Functions {
+    
 }

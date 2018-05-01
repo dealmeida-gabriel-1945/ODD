@@ -5,8 +5,22 @@
  */
 package View;
 
+import Control.DatabaseManager;
+import Control.Warnings;
+import Model.Account;
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 /**
@@ -15,12 +29,25 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
  */
 public class FRMMain extends javax.swing.JFrame {
 
+    private Account acc = new Account();
+
     /**
      * Creates new form FRMLogin
      */
     public FRMMain() {
         initComponents();
+        this.checkLogin();
+        this.setExtendedState(this.MAXIMIZED_BOTH);
         this.openIMain();
+    }
+
+    public Account getAcc() {
+        return acc;
+    }
+
+    public void setAcc(Account acc) {
+        this.acc = acc;
+        this.checkLogin();
     }
 
     /**
@@ -40,29 +67,36 @@ public class FRMMain extends javax.swing.JFrame {
         BTNDocuments = new javax.swing.JButton();
         BTNBoxes = new javax.swing.JButton();
         BTNAccount = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        PNLPhoto = new javax.swing.JPanel();
         LBLPhoto = new javax.swing.JLabel();
         DTPNLMain = new javax.swing.JDesktopPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ODD - Main");
 
-        PNLMain.setBackground(new java.awt.Color(102, 102, 102));
+        PNLMain.setBackground(new java.awt.Color(1, 19, 50));
         PNLMain.setForeground(new java.awt.Color(102, 102, 102));
 
-        PNLTools.setBackground(new java.awt.Color(102, 102, 102));
+        PNLTools.setBackground(new java.awt.Color(1, 19, 50));
         PNLTools.setForeground(new java.awt.Color(102, 102, 102));
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
         jLabel1.setText("ODDSystem");
 
         BTNLogin.setBackground(new java.awt.Color(153, 153, 153));
         BTNLogin.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        BTNLogin.setText("LogIn");
+        BTNLogin.setText("Login");
         BTNLogin.setBorder(null);
         BTNLogin.setBorderPainted(false);
+        BTNLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BTNLoginActionPerformed(evt);
+            }
+        });
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setBackground(new java.awt.Color(1, 19, 50));
         jPanel1.setForeground(new java.awt.Color(102, 102, 102));
 
         BTNDocuments.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -83,6 +117,11 @@ public class FRMMain extends javax.swing.JFrame {
         BTNBoxes.setBorder(null);
         BTNBoxes.setBorderPainted(false);
         BTNBoxes.setContentAreaFilled(false);
+        BTNBoxes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BTNBoxesActionPerformed(evt);
+            }
+        });
 
         BTNAccount.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         BTNAccount.setForeground(new java.awt.Color(204, 0, 0));
@@ -90,13 +129,32 @@ public class FRMMain extends javax.swing.JFrame {
         BTNAccount.setBorder(null);
         BTNAccount.setBorderPainted(false);
         BTNAccount.setContentAreaFilled(false);
+        BTNAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BTNAccountActionPerformed(evt);
+            }
+        });
+
+        jButton1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(204, 0, 0));
+        jButton1.setText("Home");
+        jButton1.setBorder(null);
+        jButton1.setBorderPainted(false);
+        jButton1.setContentAreaFilled(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(398, Short.MAX_VALUE)
+                .addContainerGap(339, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
                 .addComponent(BTNAccount)
                 .addGap(18, 18, 18)
                 .addComponent(BTNBoxes)
@@ -109,30 +167,38 @@ public class FRMMain extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BTNBoxes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BTNBoxes, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
                     .addComponent(BTNDocuments, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(BTNAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(BTNAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        jPanel2.setBackground(new java.awt.Color(102, 102, 102));
-        jPanel2.setForeground(new java.awt.Color(102, 102, 102));
+        PNLPhoto.setBackground(new java.awt.Color(1, 19, 50));
+        PNLPhoto.setForeground(new java.awt.Color(102, 102, 102));
 
+        LBLPhoto.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        LBLPhoto.setForeground(new java.awt.Color(204, 0, 0));
         LBLPhoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LBLPhoto.setText("Photo");
+        LBLPhoto.setText("Sign in");
+        LBLPhoto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LBLPhotoMouseClicked(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout PNLPhotoLayout = new javax.swing.GroupLayout(PNLPhoto);
+        PNLPhoto.setLayout(PNLPhotoLayout);
+        PNLPhotoLayout.setHorizontalGroup(
+            PNLPhotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PNLPhotoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(LBLPhoto, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        PNLPhotoLayout.setVerticalGroup(
+            PNLPhotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PNLPhotoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(LBLPhoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -150,7 +216,7 @@ public class FRMMain extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(BTNLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(PNLPhoto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         PNLToolsLayout.setVerticalGroup(
             PNLToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,8 +227,10 @@ public class FRMMain extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
                     .addComponent(BTNLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(PNLPhoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        DTPNLMain.setBackground(new java.awt.Color(102, 0, 0));
 
         javax.swing.GroupLayout DTPNLMainLayout = new javax.swing.GroupLayout(DTPNLMain);
         DTPNLMain.setLayout(DTPNLMainLayout);
@@ -205,8 +273,89 @@ public class FRMMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BTNDocumentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNDocumentsActionPerformed
-        // TODO add your handling code here:
+        if (this.acc.equals(new Account()) != true) {
+
+        } else {
+
+        }
     }//GEN-LAST:event_BTNDocumentsActionPerformed
+
+    private void BTNAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNAccountActionPerformed
+        if (this.acc.equals(new Account()) != true) {
+
+        } else {
+
+        }
+    }//GEN-LAST:event_BTNAccountActionPerformed
+
+    private void BTNBoxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNBoxesActionPerformed
+        if (this.acc.equals(new Account()) != true) {
+
+            IFRMAddBox addBx = new IFRMAddBox();
+            setRootPaneCheckingEnabled(false);
+            javax.swing.plaf.InternalFrameUI ifu = addBx.getUI();
+            ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+            DTPNLMain.removeAll();
+            DTPNLMain.add(addBx);
+            try {
+                addBx.setMaximum(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            addBx.show();
+
+        } else {
+
+        }
+    }//GEN-LAST:event_BTNBoxesActionPerformed
+
+    private void LBLPhotoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LBLPhotoMouseClicked
+        if (this.acc.getId() < 1) {
+            IFRMAddAccount iAddAcc = new IFRMAddAccount();
+            setRootPaneCheckingEnabled(false);
+            javax.swing.plaf.InternalFrameUI ifu = iAddAcc.getUI();
+            ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+            DTPNLMain.removeAll();
+            DTPNLMain.add(iAddAcc);
+            try {
+                iAddAcc.setMaximum(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            iAddAcc.show();
+        } else {
+            
+        }
+    }//GEN-LAST:event_LBLPhotoMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        DatabaseManager dbm = new DatabaseManager();
+        dbm.getAllAccounts();
+        //dbm.deletall();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void BTNLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNLoginActionPerformed
+        if (BTNLogin.getText().equals("Login")) {
+            IFRMLogin ilog = new IFRMLogin();
+            setRootPaneCheckingEnabled(false);
+            javax.swing.plaf.InternalFrameUI ifu = ilog.getUI();
+            ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+            DTPNLMain.removeAll();
+            DTPNLMain.add(ilog);
+            try {
+                ilog.setMaximum(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ilog.show();
+        }else{
+            int i = Warnings.wrngConfirmLogout();
+            FRMMain main = new FRMMain();
+            main.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_BTNLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -218,12 +367,7 @@ public class FRMMain extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(FRMMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
@@ -252,10 +396,11 @@ public class FRMMain extends javax.swing.JFrame {
     private javax.swing.JDesktopPane DTPNLMain;
     private javax.swing.JLabel LBLPhoto;
     private javax.swing.JPanel PNLMain;
+    private javax.swing.JPanel PNLPhoto;
     private javax.swing.JPanel PNLTools;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 
     public void openIMain() {
@@ -271,5 +416,31 @@ public class FRMMain extends javax.swing.JFrame {
             e.printStackTrace();
         }
         imain.show();
+    }
+
+    private void checkLogin() {
+        if (this.acc.getId() != 0) {
+            BTNLogin.setText("Logout");
+            LBLPhoto.setText("");
+            this.putPhoto();
+        } else {
+            LBLPhoto.setText("Sign In");
+        }
+    }
+
+    private void putPhoto() {
+        try {
+            int blobLength = (int) acc.getPhoto().length();
+            byte[] blobAsBytes = acc.getPhoto().getBytes(1, blobLength);
+            acc.getPhoto().free();
+            ImageIcon imgi = new ImageIcon(blobAsBytes);
+            Image image = imgi.getImage();
+            Image newimg = image.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+            imgi = new ImageIcon(newimg);  // transform it back
+            LBLPhoto.setIcon(imgi);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

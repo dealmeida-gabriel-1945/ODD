@@ -5,6 +5,8 @@
  */
 package Model;
 
+import java.io.File;
+import java.sql.Blob;
 import java.util.ArrayList;
 
 /**
@@ -13,9 +15,13 @@ import java.util.ArrayList;
  */
 public class Account {
     private int id;
+    private String login;
+    private String password;
     private String name;
     private String folder_name;
     private String absolut_path;
+    private String photoPath;
+    private Blob photo;
     //Relationship between tables   
     private ArrayList<Box> boxes = new ArrayList<Box>();
     private ArrayList<Document> documents = new ArrayList<Document>();
@@ -66,6 +72,38 @@ public class Account {
 
     public void setDocuments(ArrayList<Document> documents) {
         this.documents = documents;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
+
+    public Blob getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Blob photo) {
+        this.photo = photo;
     }
     
 }
