@@ -159,7 +159,29 @@ public class DatabaseManager {
     public Account makeLogin(String login, String password) {
         Account acc = new Account();
         try {
-            String sql = "SELECT * FROM account WHERE accLogin = '"+login+"' AND accPassword = '"+password+"';";
+            String sql = "SELECT * FROM account WHERE accLogin = '" + login + "' AND accPassword = '" + password + "';";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                acc.setId(rs.getInt("accId"));
+                acc.setName(rs.getString("accName"));
+                acc.setPassword(rs.getString("accPassword"));
+                acc.setPhoto(rs.getBlob("accPhoto"));
+                acc.setFolder_name(rs.getString("accFolderName"));
+                acc.setAbsolut_path(rs.getString("accAbsoluthPath"));
+                acc.setLogin(rs.getString("accLogin"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return acc;
+    }
+
+    public Account getAccountById(int id) {
+        Account acc = new Account();
+        try {
+            String sql = "SELECT * FROM account WHERE accId = "+id+";";
 
             ResultSet rs = stmt.executeQuery(sql);
 

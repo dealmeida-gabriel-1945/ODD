@@ -46,4 +46,11 @@ public class AccountControl {
         acc = dbm.makeLogin(login, password);
         return acc;
     }
+
+    public static Account getAccountById(int id) {
+        DatabaseManager dbm = new DatabaseManager();
+        Account acc = new Account();
+        acc = dbm.getAccountById(id);
+        return acc;
+    }
 }

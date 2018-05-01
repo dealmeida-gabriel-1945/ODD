@@ -324,7 +324,19 @@ public class FRMMain extends javax.swing.JFrame {
             }
             iAddAcc.show();
         } else {
-            
+            IFRMViewMyrofile vacc = new IFRMViewMyrofile();
+            vacc.setAcc(this.acc.getId());
+            setRootPaneCheckingEnabled(false);
+            javax.swing.plaf.InternalFrameUI ifu = vacc.getUI();
+            ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+            DTPNLMain.removeAll();
+            DTPNLMain.add(vacc);
+            try {
+                vacc.setMaximum(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            vacc.show();
         }
     }//GEN-LAST:event_LBLPhotoMouseClicked
 

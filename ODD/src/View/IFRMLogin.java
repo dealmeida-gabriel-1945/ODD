@@ -40,7 +40,7 @@ public class IFRMLogin extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         TFPassword = new javax.swing.JPasswordField();
         BTNEnter = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        BTNSignin = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(102, 0, 0));
 
@@ -74,8 +74,13 @@ public class IFRMLogin extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jButton2.setText("Sign In");
+        BTNSignin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        BTNSignin.setText("Sign In");
+        BTNSignin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BTNSigninActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -89,7 +94,7 @@ public class IFRMLogin extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(TFPassword)
                     .addComponent(BTNEnter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
+                    .addComponent(BTNSignin, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -106,7 +111,7 @@ public class IFRMLogin extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(BTNEnter)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 256, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(BTNSignin)
                 .addContainerGap())
         );
 
@@ -142,40 +147,55 @@ public class IFRMLogin extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BTNEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNEnterActionPerformed
-        if(this.checkFields() == false){
+        if (this.checkFields() == false) {
             boolean boo = AccountControl.checkLogin(TFLogin.getText(), TFPassword.getText());
-            if(boo == false){
+            if (boo == false) {
                 Account acc = new Account();
                 acc = AccountControl.makeLogin(TFLogin.getText(), TFPassword.getText());
                 this.restart(acc);
             }
-        }else{
+        } else {
             Warnings.wrngEmptyFields();
         }
     }//GEN-LAST:event_BTNEnterActionPerformed
 
     private void TFLoginKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TFLoginKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) { 
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // faz qualquer coisa que você quiser  
-           BTNEnter.doClick();
-           //jButton1ActionPerformed(evt); // Não funciona pois este é um ActionEvent dentro de um KeyEvent
-        } 
+            BTNEnter.doClick();
+            //jButton1ActionPerformed(evt); // Não funciona pois este é um ActionEvent dentro de um KeyEvent
+        }
     }//GEN-LAST:event_TFLoginKeyPressed
 
     private void TFPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TFPasswordKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) { 
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // faz qualquer coisa que você quiser  
-           BTNEnter.doClick();
-           //jButton1ActionPerformed(evt); // Não funciona pois este é um ActionEvent dentro de um KeyEvent
-        } 
+            BTNEnter.doClick();
+            //jButton1ActionPerformed(evt); // Não funciona pois este é um ActionEvent dentro de um KeyEvent
+        }
     }//GEN-LAST:event_TFPasswordKeyPressed
+
+    private void BTNSigninActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNSigninActionPerformed
+        IFRMAddAccount addacc = new IFRMAddAccount();
+        setRootPaneCheckingEnabled(false);
+        javax.swing.plaf.InternalFrameUI ifu = addacc.getUI();
+        ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+        this.getParent().add(addacc);
+        try {
+            addacc.setMaximum(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        addacc.show();
+        this.dispose();
+    }//GEN-LAST:event_BTNSigninActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTNEnter;
+    private javax.swing.JButton BTNSignin;
     private javax.swing.JTextField TFLogin;
     private javax.swing.JPasswordField TFPassword;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -183,9 +203,9 @@ public class IFRMLogin extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private boolean checkFields() {
-        if((TFLogin.getText().equals(""))||(TFPassword.getText().equals(""))){
+        if ((TFLogin.getText().equals("")) || (TFPassword.getText().equals(""))) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
