@@ -84,6 +84,11 @@ public class FRMMain extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(204, 204, 204));
         jLabel1.setText("ODDSystem");
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
 
         BTNLogin.setBackground(new java.awt.Color(153, 153, 153));
         BTNLogin.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -289,9 +294,8 @@ public class FRMMain extends javax.swing.JFrame {
     }//GEN-LAST:event_BTNAccountActionPerformed
 
     private void BTNBoxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNBoxesActionPerformed
-        if (this.acc.equals(new Account()) != true) {
-
-            IFRMAddBox addBx = new IFRMAddBox();
+        if (this.acc.getId() > 0) {
+            IFRMAddBox addBx = new IFRMAddBox(acc.getId());
             setRootPaneCheckingEnabled(false);
             javax.swing.plaf.InternalFrameUI ifu = addBx.getUI();
             ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
@@ -305,7 +309,7 @@ public class FRMMain extends javax.swing.JFrame {
             addBx.show();
 
         } else {
-
+            Warnings.wrngNotLogged();
         }
     }//GEN-LAST:event_BTNBoxesActionPerformed
 
@@ -341,10 +345,18 @@ public class FRMMain extends javax.swing.JFrame {
     }//GEN-LAST:event_LBLPhotoMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        DatabaseManager dbm = new DatabaseManager();
-        dbm.getAllAccounts();
-        //dbm.deletall();
+        IFRMMain imain = new IFRMMain();
+        setRootPaneCheckingEnabled(false);
+        javax.swing.plaf.InternalFrameUI ifu = imain.getUI();
+        ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+        DTPNLMain.removeAll();
+        DTPNLMain.add(imain);
+        try {
+            imain.setMaximum(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        imain.show();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void BTNLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNLoginActionPerformed
@@ -368,6 +380,12 @@ public class FRMMain extends javax.swing.JFrame {
             this.dispose();
         }
     }//GEN-LAST:event_BTNLoginActionPerformed
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        DatabaseManager d = new DatabaseManager();
+        //d.drop();
+        //d.deletall();
+    }//GEN-LAST:event_jLabel1MouseClicked
 
     /**
      * @param args the command line arguments

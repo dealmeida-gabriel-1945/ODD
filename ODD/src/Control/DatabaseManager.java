@@ -6,6 +6,7 @@
 package Control;
 
 import Model.Account;
+import Model.Box;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.logging.Logger;
 public class DatabaseManager {
 
     private static final String JDBC_DRIVER = "org.h2.Driver";
-    private static final String DB_URL = "jdbc:h2:~/oddSystem";
+    private static final String DB_URL = "jdbc:h2:~/oddSystem1";
     private static final String DB_USERNAME = "oddeveloper";
     private static final String DB_PASSWORD = "dev2018fga18gga";
     private Connection connection;
@@ -47,7 +48,7 @@ public class DatabaseManager {
             + "(boxId bigint auto_increment NOT NULL PRIMARY KEY,"
             + "boxName VARCHAR(50),"
             + "boxDescription TEXT,"
-            + "dboxFolderName TEXT,"
+            + "boxFolderName TEXT,"
             + "boxAbsoluthPath TEXT,"
             + "box_accId bigint);";
 
@@ -87,14 +88,7 @@ public class DatabaseManager {
         return boo;
     }
 
-    public void deletall() {
-        try {
-            String sql = "DELETE FROM account WHERE accId > 0;";
-            stmt.execute(sql);
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-    }
+    
 
     public ArrayList<Account> getAllAccounts() {
         ArrayList<Account> accs = new ArrayList<>();
@@ -181,7 +175,7 @@ public class DatabaseManager {
     public Account getAccountById(int id) {
         Account acc = new Account();
         try {
-            String sql = "SELECT * FROM account WHERE accId = "+id+";";
+            String sql = "SELECT * FROM account WHERE accId = " + id + ";";
 
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -200,7 +194,47 @@ public class DatabaseManager {
         return acc;
     }
 
+    public boolean addBox(Box box) {
+        boolean boo = false;
+        try {
+            String sql = "INSERT INTO box (boxName, boxDescription, boxFolderName, boxAbsoluthPath, box_accId) "
+                    + "VALUES "
+                    + "('" + box.getName() + "',"
+                    + "'" + box.getDescription() + "',"
+                    + "'" + box.getFolder_name() + "',"
+                    + "'" + box.getAbsolut_path() + "',"
+                    + "" + box.getAccount_id() + ""
+                    + ");";
+            stmt.execute(sql);
+            Warnings.wrngBoxAccountSuccess();
+        } catch (SQLException ex) {
+            boo = true;
+            Warnings.wrngAddBoxFail();
+            ex.printStackTrace();
+        }
+
+        if ((box.getDocuments().size() != 0) && (boo == false)) {
+            //boo = this.relationBoxDoc(box);
+        }
+
+        return boo;
+    }
+
+     /*   private boolean relationBoxDoc(Box box) {
+            
+    }*/
     /*
+    
+    (boxId bigint auto_increment NOT NULL PRIMARY KEY,"
+            + "boxName VARCHAR(50),"
+            + "boxDescription TEXT,"
+            + "dboxFolderName TEXT,"
+            + "boxAbsoluthPath TEXT,"
+            + "box_accId bigint)
+    
+     */
+
+ /*
     public void removeBook(String keyword) {
         try {
             String sql = "DELETE FROM BOOKS  where bookid =  '" + keyword + "'";
@@ -242,4 +276,20 @@ public class DatabaseManager {
         }
         return false;
     }*/
+    public void deletall() {
+        try {
+            String sql = "DELETE FROM account WHERE accId > 0;";
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+    public void drop() {
+        try {
+            String sql = "DROP SCHEMA oddSystem;";
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
 }

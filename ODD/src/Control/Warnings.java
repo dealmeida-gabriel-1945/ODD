@@ -42,4 +42,16 @@ public class Warnings {
     public static int wrngConfirmLogout() {
         return JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?");
     }
+
+    public static void wrngNotLogged() {
+        JOptionPane.showMessageDialog(null, "You can't do this!\n You aren't logged..");
+    }
+
+    static void wrngAddBoxFail() {
+        JOptionPane.showMessageDialog(null, "Box create fail!");
+    }
+
+    static void wrngBoxAccountSuccess() {
+        JOptionPane.showMessageDialog(null, "Box created!");
+    }
 }
