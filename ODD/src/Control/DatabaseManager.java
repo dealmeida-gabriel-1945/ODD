@@ -7,6 +7,7 @@ package Control;
 
 import Model.Account;
 import Model.Box;
+import Model.Document;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 public class DatabaseManager {
 
     private static final String JDBC_DRIVER = "org.h2.Driver";
-    private static final String DB_URL = "jdbc:h2:~/oddSystem1";
+    private static final String DB_URL = "jdbc:h2:~/oddSystem3";
     private static final String DB_USERNAME = "oddeveloper";
     private static final String DB_PASSWORD = "dev2018fga18gga";
     private Connection connection;
@@ -38,11 +39,12 @@ public class DatabaseManager {
             + " "
             + "CREATE TABLE IF NOT EXISTS document "
             + "(docId bigint auto_increment NOT NULL PRIMARY KEY,"
+            + "docName TEXT,"
             + "docType VARCHAR(50),"
             + "docFileName TEXT,"
             + "docAbsoluthPath TEXT,"
             + "doc_accId bigint,"
-            + "box_docId bigint);"
+            + "doc_boxId bigint);"
             + " "
             + "CREATE TABLE IF NOT EXISTS box "
             + "(boxId bigint auto_increment NOT NULL PRIMARY KEY,"
@@ -87,8 +89,6 @@ public class DatabaseManager {
         }
         return boo;
     }
-
-    
 
     public ArrayList<Account> getAllAccounts() {
         ArrayList<Account> accs = new ArrayList<>();
@@ -197,7 +197,7 @@ public class DatabaseManager {
     public boolean addBox(Box box) {
         boolean boo = false;
         try {
-            String sql = "INSERT INTO box (boxName, boxDescription, boxFolderName, boxAbsoluthPath, box_accId) "
+            String sql = "INSERT INTO box (boxName, boxDescription, boxFolderName, boxAbsoluthPath, box_boxId) "
                     + "VALUES "
                     + "('" + box.getName() + "',"
                     + "'" + box.getDescription() + "',"
@@ -218,6 +218,56 @@ public class DatabaseManager {
         }
 
         return boo;
+    }
+    
+    public ArrayList<Box> listBoxByIdAcc(int id) {
+        ArrayList<Box> boxes = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM box WHERE box_accId = "+id+";";
+            
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                Box box = new Box();
+                box.setId(rs.getInt("boxId"));
+                box.setName(rs.getString("boxName"));
+                box.setDescription(rs.getString("boxDescription"));
+                box.setFolder_name(rs.getString("boxFolderName"));
+                box.setAbsolut_path(rs.getString("boxAbsoluthPath"));
+                box.setDocuments(new DatabaseManager().getDocumentsByBoxId(box.getId(), id));
+                box.setAccount_id(id);
+                boxes.add(box);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return boxes;
+    }
+    
+    public ArrayList<Document> getDocumentsByBoxId(int id, int accId) {
+        ArrayList<Document> docs = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM document WHERE doc_boxId = "+id+";";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                Document doc = new Document();
+                doc.setId(rs.getInt("docId"));
+                doc.setName(rs.getString("docName"));
+                doc.setName(rs.getString("docType"));
+                doc.setFile_name(rs.getString("docFileName"));
+                doc.setAbsolut_path(rs.getString("docAbsoluthPath"));
+                doc.setBox_id(id);
+                doc.setAccount_id(accId);
+                docs.add(doc);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return docs;
     }
 
      /*   private boolean relationBoxDoc(Box box) {
@@ -292,4 +342,6 @@ public class DatabaseManager {
             System.out.println(ex);
         }
     }
+
+    
 }

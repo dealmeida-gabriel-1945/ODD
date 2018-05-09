@@ -6,6 +6,7 @@
 package Control;
 
 import Model.Box;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,5 +16,10 @@ public class BoxControl {
     public static boolean addBox(Box box){
         DatabaseManager dbm = new DatabaseManager();
         return dbm.addBox(box);
+    }
+    
+    public static ArrayList<Box> listBoxByIdAcc(int id){
+        DatabaseManager dbm = new DatabaseManager();
+        return dbm.listBoxByIdAcc(id);
     }
 }

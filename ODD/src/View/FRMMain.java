@@ -59,6 +59,12 @@ public class FRMMain extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        PUMBoxes = new javax.swing.JPopupMenu();
+        MIAddBox = new javax.swing.JMenuItem();
+        MIListBoxes = new javax.swing.JMenuItem();
+        PUMDocs = new javax.swing.JPopupMenu();
+        MIAddDoc = new javax.swing.JMenuItem();
+        MIListDocs = new javax.swing.JMenuItem();
         PNLMain = new javax.swing.JPanel();
         PNLTools = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -71,6 +77,41 @@ public class FRMMain extends javax.swing.JFrame {
         PNLPhoto = new javax.swing.JPanel();
         LBLPhoto = new javax.swing.JLabel();
         DTPNLMain = new javax.swing.JDesktopPane();
+
+        PUMBoxes.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        PUMBoxes.setInvoker(BTNBoxes);
+
+        MIAddBox.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        MIAddBox.setText("Add Box");
+        MIAddBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MIAddBoxActionPerformed(evt);
+            }
+        });
+        PUMBoxes.add(MIAddBox);
+
+        MIListBoxes.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        MIListBoxes.setText("List Boxes");
+        MIListBoxes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MIListBoxesActionPerformed(evt);
+            }
+        });
+        PUMBoxes.add(MIListBoxes);
+
+        PUMBoxes.getAccessibleContext().setAccessibleParent(BTNBoxes);
+
+        PUMDocs.setInvoker(BTNDocuments);
+
+        MIAddDoc.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        MIAddDoc.setText("Add Document");
+        PUMDocs.add(MIAddDoc);
+
+        MIListDocs.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        MIListDocs.setText("List Documents");
+        PUMDocs.add(MIListDocs);
+
+        PUMDocs.getAccessibleContext().setAccessibleParent(BTNDocuments);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ODD - Main");
@@ -122,6 +163,14 @@ public class FRMMain extends javax.swing.JFrame {
         BTNBoxes.setBorder(null);
         BTNBoxes.setBorderPainted(false);
         BTNBoxes.setContentAreaFilled(false);
+        BTNBoxes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                BTNBoxesMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                BTNBoxesMouseExited(evt);
+            }
+        });
         BTNBoxes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BTNBoxesActionPerformed(evt);
@@ -278,10 +327,12 @@ public class FRMMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BTNDocumentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNDocumentsActionPerformed
-        if (this.acc.equals(new Account()) != true) {
-
+        if (this.acc.getId() > 0) {
+            this.PUMDocs.setVisible(true);
+            this.PUMDocs.setLocation(this.getMousePosition().x, this.getMousePosition().y);
         } else {
-
+            Warnings.wrngNotLogged();
+            this.PUMDocs.setVisible(false);
         }
     }//GEN-LAST:event_BTNDocumentsActionPerformed
 
@@ -295,21 +346,12 @@ public class FRMMain extends javax.swing.JFrame {
 
     private void BTNBoxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNBoxesActionPerformed
         if (this.acc.getId() > 0) {
-            IFRMAddBox addBx = new IFRMAddBox(acc.getId());
-            setRootPaneCheckingEnabled(false);
-            javax.swing.plaf.InternalFrameUI ifu = addBx.getUI();
-            ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
-            DTPNLMain.removeAll();
-            DTPNLMain.add(addBx);
-            try {
-                addBx.setMaximum(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            addBx.show();
+            this.PUMBoxes.setVisible(true);
+            this.PUMBoxes.setLocation(this.getMousePosition().x, this.getMousePosition().y);
 
         } else {
             Warnings.wrngNotLogged();
+            this.PUMBoxes.setVisible(false);
         }
     }//GEN-LAST:event_BTNBoxesActionPerformed
 
@@ -373,7 +415,7 @@ public class FRMMain extends javax.swing.JFrame {
                 e.printStackTrace();
             }
             ilog.show();
-        }else{
+        } else {
             int i = Warnings.wrngConfirmLogout();
             FRMMain main = new FRMMain();
             main.setVisible(true);
@@ -386,6 +428,45 @@ public class FRMMain extends javax.swing.JFrame {
         //d.drop();
         //d.deletall();
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void BTNBoxesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTNBoxesMouseEntered
+
+
+    }//GEN-LAST:event_BTNBoxesMouseEntered
+
+    private void BTNBoxesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTNBoxesMouseExited
+
+    }//GEN-LAST:event_BTNBoxesMouseExited
+
+    private void MIAddBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MIAddBoxActionPerformed
+        IFRMAddBox ab = new IFRMAddBox(this.acc.getId());
+        setRootPaneCheckingEnabled(false);
+        javax.swing.plaf.InternalFrameUI ifu = ab.getUI();
+        ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+        DTPNLMain.removeAll();
+        DTPNLMain.add(ab);
+        try {
+            ab.setMaximum(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ab.show();
+    }//GEN-LAST:event_MIAddBoxActionPerformed
+
+    private void MIListBoxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MIListBoxesActionPerformed
+        IFRMListBox lb = new IFRMListBox(this.acc.getId());
+        setRootPaneCheckingEnabled(false);
+        javax.swing.plaf.InternalFrameUI ifu = lb.getUI();
+        ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+        DTPNLMain.removeAll();
+        DTPNLMain.add(lb);
+        try {
+            lb.setMaximum(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        lb.show();
+    }//GEN-LAST:event_MIListBoxesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -425,9 +506,15 @@ public class FRMMain extends javax.swing.JFrame {
     private javax.swing.JButton BTNLogin;
     private javax.swing.JDesktopPane DTPNLMain;
     private javax.swing.JLabel LBLPhoto;
+    private javax.swing.JMenuItem MIAddBox;
+    private javax.swing.JMenuItem MIAddDoc;
+    private javax.swing.JMenuItem MIListBoxes;
+    private javax.swing.JMenuItem MIListDocs;
     private javax.swing.JPanel PNLMain;
     private javax.swing.JPanel PNLPhoto;
     private javax.swing.JPanel PNLTools;
+    private javax.swing.JPopupMenu PUMBoxes;
+    private javax.swing.JPopupMenu PUMDocs;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
