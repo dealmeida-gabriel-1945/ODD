@@ -7,11 +7,15 @@ package View;
 
 import Control.AccountControl;
 import Control.BoxControl;
+import Control.DocumentControl;
 import Control.Warnings;
 import Model.Account;
 import Model.Box;
 import Model.Document;
 import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,12 +25,14 @@ public class IFRMAddBox extends javax.swing.JInternalFrame {
 
     private Account acc = new Account();
     private ArrayList<Document> docs = new ArrayList<>();
+    private DefaultTableModel dtm;
 
     /**
      * Creates new form IFRMAddBox
      */
     public IFRMAddBox(int id) {
         initComponents();
+        this.setDefaultRender();
         this.setAcc(id);
     }
 
@@ -113,7 +119,7 @@ public class IFRMAddBox extends javax.swing.JInternalFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Boolean.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 true, false, false
@@ -127,11 +133,19 @@ public class IFRMAddBox extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        TBLDocs.setColumnSelectionAllowed(true);
         TBLDocs.getTableHeader().setReorderingAllowed(false);
+        TBLDocs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TBLDocsMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(TBLDocs);
+        TBLDocs.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (TBLDocs.getColumnModel().getColumnCount() > 0) {
             TBLDocs.getColumnModel().getColumn(0).setResizable(false);
             TBLDocs.getColumnModel().getColumn(1).setResizable(false);
+            TBLDocs.getColumnModel().getColumn(2).setResizable(false);
         }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -221,6 +235,10 @@ public class IFRMAddBox extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_BTNRegisterActionPerformed
 
+    private void TBLDocsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TBLDocsMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TBLDocsMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTNRegister;
@@ -236,7 +254,13 @@ public class IFRMAddBox extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
-
+    
+    private void setDefaultRender() {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        TBLDocs.setDefaultRenderer(String.class, centerRenderer);
+    }
+    
     private void setAcc(int id) {
         AccountControl accc = new AccountControl();
         this.acc = accc.getAccountById(id);
@@ -244,6 +268,9 @@ public class IFRMAddBox extends javax.swing.JInternalFrame {
     }
 
     private void populateTable() {
+        this.docs = DocumentControl.listDocsByAccIdToAddBox(this.acc.getId());
+        this.deleteAllRows();
+        this.populate();
     }
 
     private boolean checkFields() {
@@ -259,10 +286,8 @@ public class IFRMAddBox extends javax.swing.JInternalFrame {
         b.setAccount_id(this.acc.getId());
         b.setName(TFName.getText());
         b.setDescription(TADescription.getText());
-        b.setFolder_name(TFName.getText());
-        b.setAbsolut_path(this.acc.getAbsolut_path() + "/" + b.getName());
         if (docs.size() != 0) {
-            //b.setDocuments(this.takeDocs());
+            b.setDocuments(this.takeDocs());
         }
         return b;
     }
@@ -283,6 +308,29 @@ public class IFRMAddBox extends javax.swing.JInternalFrame {
         }
     }
 
-    //private ArrayList<Document> takeDocs() {
-    //}
+    private void deleteAllRows() {
+        while (TBLDocs.getRowCount() > 0) {
+            DefaultTableModel dm = (DefaultTableModel) TBLDocs.getModel();
+            dm.getDataVector().removeAllElements();
+        }
+    }
+
+    private void populate() {
+        dtm = (DefaultTableModel) this.TBLDocs.getModel();
+        for (Document doc : docs) {
+            dtm.addRow(new Object[]{Boolean.FALSE, doc.getId(), doc.getName()});
+        }
+        TBLDocs.setModel(dtm);
+    }
+
+    private ArrayList<Document> takeDocs() {
+        ArrayList<Document> dd = new ArrayList<Document>();
+        
+        for(int i = 0; i < TBLDocs.getRowCount(); i++){
+            if(TBLDocs.getValueAt(i, 0).equals(Boolean.TRUE)){
+                dd.add(docs.get(i));
+            }
+        }
+        return dd;
+    }
 }

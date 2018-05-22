@@ -7,6 +7,7 @@ package View;
 
 import Control.AccountControl;
 import Control.BoxControl;
+import Control.Warnings;
 import Model.Account;
 import Model.Box;
 import Model.Document;
@@ -51,6 +52,14 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
         PNLOptions = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        BTNDelete = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        TFShowId = new javax.swing.JTextField();
+        TFShowName = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        TFShowDescription = new javax.swing.JTextArea();
         PNLDocsIn = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         TFDocsIn = new javax.swing.JTextPane();
@@ -97,9 +106,47 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
 
         PNLOptions.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jButton1.setText("jButton1");
+        jButton1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jButton1.setText("Edit");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("jButton2");
+        jButton2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jButton2.setText("Generate PDF");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        BTNDelete.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        BTNDelete.setText("Delete");
+        BTNDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BTNDeleteActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Id:");
+
+        jLabel2.setText("Name:");
+
+        jLabel3.setText("Description:");
+
+        TFShowId.setEditable(false);
+        TFShowId.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+
+        TFShowName.setEditable(false);
+        TFShowName.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+
+        TFShowDescription.setEditable(false);
+        TFShowDescription.setColumns(20);
+        TFShowDescription.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        TFShowDescription.setRows(5);
+        jScrollPane3.setViewportView(TFShowDescription);
 
         javax.swing.GroupLayout PNLOptionsLayout = new javax.swing.GroupLayout(PNLOptions);
         PNLOptions.setLayout(PNLOptionsLayout);
@@ -108,17 +155,44 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
             .addGroup(PNLOptionsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(PNLOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(BTNDelete, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addGroup(PNLOptionsLayout.createSequentialGroup()
+                        .addGroup(PNLOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(PNLOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TFShowId)
+                            .addComponent(TFShowName)))
+                    .addGroup(PNLOptionsLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
                 .addContainerGap())
         );
         PNLOptionsLayout.setVerticalGroup(
             PNLOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PNLOptionsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(PNLOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(TFShowId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PNLOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(TFShowName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(BTNDelete)
                 .addContainerGap())
         );
 
@@ -147,7 +221,7 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
             PNLMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PNLMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PNLMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PNLOptions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -159,7 +233,7 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
             .addGroup(PNLMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(PNLMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                     .addGroup(PNLMainLayout.createSequentialGroup()
                         .addComponent(PNLOptions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -200,22 +274,61 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
 
     private void TBLBoxesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TBLBoxesMouseClicked
         this.boxClicked = boxes.get(TBLBoxes.getSelectedRow());
-        TBLBoxes.clearSelection();
+        TFShowDescription.setText(this.boxClicked.getDescription());
+        TFShowId.setText(this.boxClicked.getId() + "");
+        TFShowName.setText(this.boxClicked.getName());
         this.showDocumets();
     }//GEN-LAST:event_TBLBoxesMouseClicked
 
+    private void BTNDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNDeleteActionPerformed
+        if (boxClicked.getDocuments().size() != 0) {
+            Warnings.wrngCannotDeleteBoxCauseDocs();
+        } else {
+            if (Warnings.wrngConfirmDelete() == 0) {
+                if (Warnings.wrngTypeYourPassword().equals(this.acc.getPassword())) {
+                    if (BoxControl.deleteBox(boxClicked.getId()) == false) {
+                        Warnings.wrngDeleteDocumentSuccess();
+                        this.restart();
+                    } else {
+                        Warnings.wrngDeleteDocumentFail();
+                    }
+                } else {
+                    Warnings.wrngIncorrectPassword();
+                }
+            } else {
+
+            }
+        }
+    }//GEN-LAST:event_BTNDeleteActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BTNDelete;
     private javax.swing.JPanel PNLDocsIn;
     private javax.swing.JPanel PNLMain;
     private javax.swing.JPanel PNLOptions;
     private javax.swing.JTable TBLBoxes;
     private javax.swing.JTextPane TFDocsIn;
+    private javax.swing.JTextArea TFShowDescription;
+    private javax.swing.JTextField TFShowId;
+    private javax.swing.JTextField TFShowName;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
     private void setAcc(int id) {
         AccountControl accc = new AccountControl();
@@ -254,7 +367,22 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
     private void showDocumets() {
         String txt = "";
         for (Document doc : this.boxClicked.getDocuments()) {
-            txt+=doc.getName()+" \n";
+            txt += doc.getName() + " \n";
         }
+        TFDocsIn.setText(txt);
+    }
+
+    private void restart() {
+        IFRMListBox ilb = new IFRMListBox(this.acc.getId());
+        javax.swing.plaf.InternalFrameUI ifu = ilb.getUI();
+        ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+        this.getParent().add(ilb);
+        try {
+            ilb.setMaximum(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ilb.show();
+        this.dispose();
     }
 }

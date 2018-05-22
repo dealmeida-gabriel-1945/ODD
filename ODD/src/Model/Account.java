@@ -18,8 +18,6 @@ public class Account {
     private String login;
     private String password;
     private String name;
-    private String folder_name;
-    private String absolut_path;
     private String photoPath;
     private Blob photo;
     //Relationship between tables   
@@ -40,22 +38,6 @@ public class Account {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getFolder_name() {
-        return folder_name;
-    }
-
-    public void setFolder_name(String folder_name) {
-        this.folder_name = folder_name;
-    }
-
-    public String getAbsolut_path() {
-        return absolut_path;
-    }
-
-    public void setAbsolut_path(String absolut_path) {
-        this.absolut_path = absolut_path;
     }
 
     public ArrayList<Box> getBoxes() {

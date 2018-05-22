@@ -5,17 +5,21 @@
  */
 package Control;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
 /**
  *
  * @author Gabriel Guimarães
  */
 public class Warnings {
-    public static void wrngEmptyFields(){
+
+    public static void wrngEmptyFields() {
         JOptionPane.showMessageDialog(null, "Fill in the fields.");
     }
-    public static void wrngNoSelection(){
+
+    public static void wrngNoSelection() {
         JOptionPane.showMessageDialog(null, "No selection.");
     }
 
@@ -53,5 +57,41 @@ public class Warnings {
 
     static void wrngBoxAccountSuccess() {
         JOptionPane.showMessageDialog(null, "Box created!");
+    }
+
+    public static void wrngAddDocumentFail() {
+        JOptionPane.showMessageDialog(null, "Document create fail!");
+    }
+
+    public static void wrngAddDocumentSucces() {
+        JOptionPane.showMessageDialog(null, "Document created!");
+    }
+
+    public static int wrngConfirmDelete() {
+        return JOptionPane.showConfirmDialog(null, "Are you sure you want to delete?");
+    }
+
+    public static String wrngTypeYourPassword() {
+        JLabel label = new JLabel("To delete, type your password:");
+        JPasswordField jpf = new JPasswordField();
+        JOptionPane.showConfirmDialog(null, new Object[]{label, jpf}, "Senha:", JOptionPane.OK_CANCEL_OPTION);
+        String senha = jpf.getText();
+        return senha;
+    }
+
+    public static void wrngCannotDeleteBoxCauseDocs() {
+        JOptionPane.showMessageDialog(null, "You can't delete this box, because it have at leats one document in!");
+    }
+
+    public static void wrngIncorrectPassword() {
+        JOptionPane.showMessageDialog(null, "Incorrect password!");
+    }
+
+    public static void wrngDeleteDocumentSuccess() {
+        JOptionPane.showMessageDialog(null, "Box deleted!");
+    }
+
+    public static void wrngDeleteDocumentFail() {
+        JOptionPane.showMessageDialog(null, "Box delete fail!");
     }
 }

@@ -5,27 +5,21 @@
  */
 package Control;
 
-import Model.Box;
+import Model.Document;
 import java.util.ArrayList;
 
 /**
  *
  * @author Gabriel Guimarães
  */
-public class BoxControl {
-
-    public static boolean addBox(Box box) {
+public class DocumentControl {
+    public static boolean addDocument(Document doc){
         DatabaseManager dbm = new DatabaseManager();
-        return dbm.addBox(box);
+        return dbm.addDocument(doc);
     }
 
-    public static ArrayList<Box> listBoxByIdAcc(int id) {
+    public static ArrayList<Document> listDocsByAccIdToAddBox(int id) {
         DatabaseManager dbm = new DatabaseManager();
-        return dbm.listBoxByIdAcc(id);
-    }
-
-    public static boolean deleteBox(int id) {
-        DatabaseManager dbm = new DatabaseManager();
-        return dbm.deleteBox(id);
+        return dbm.listDocsByAccIdToAddBox(id);
     }
 }

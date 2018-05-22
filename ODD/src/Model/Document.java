@@ -13,8 +13,6 @@ public class Document {
     private int id;
     private String name;
     private String type;
-    private String file_name;
-    private String absolut_path;
     //Relationship between tables   
     private int box_id;
     private int account_id;
@@ -41,22 +39,6 @@ public class Document {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getFile_name() {
-        return file_name;
-    }
-
-    public void setFile_name(String file_name) {
-        this.file_name = file_name;
-    }
-
-    public String getAbsolut_path() {
-        return absolut_path;
-    }
-
-    public void setAbsolut_path(String absolut_path) {
-        this.absolut_path = absolut_path;
     }
 
     public int getBox_id() {

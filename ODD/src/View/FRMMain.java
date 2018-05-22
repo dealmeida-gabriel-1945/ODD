@@ -105,6 +105,11 @@ public class FRMMain extends javax.swing.JFrame {
 
         MIAddDoc.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         MIAddDoc.setText("Add Document");
+        MIAddDoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MIAddDocActionPerformed(evt);
+            }
+        });
         PUMDocs.add(MIAddDoc);
 
         MIListDocs.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
@@ -426,7 +431,7 @@ public class FRMMain extends javax.swing.JFrame {
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         DatabaseManager d = new DatabaseManager();
         //d.drop();
-        //d.deletall();
+        d.deletall();
     }//GEN-LAST:event_jLabel1MouseClicked
 
     private void BTNBoxesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTNBoxesMouseEntered
@@ -467,6 +472,21 @@ public class FRMMain extends javax.swing.JFrame {
         }
         lb.show();
     }//GEN-LAST:event_MIListBoxesActionPerformed
+
+    private void MIAddDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MIAddDocActionPerformed
+        IFRMAddDocument ad = new IFRMAddDocument(this.acc.getId());
+        setRootPaneCheckingEnabled(false);
+        javax.swing.plaf.InternalFrameUI ifu = ad.getUI();
+        ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+        DTPNLMain.removeAll();
+        DTPNLMain.add(ad);
+        try {
+            ad.setMaximum(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ad.show();
+    }//GEN-LAST:event_MIAddDocActionPerformed
 
     /**
      * @param args the command line arguments

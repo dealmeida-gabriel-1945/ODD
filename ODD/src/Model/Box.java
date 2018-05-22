@@ -15,8 +15,6 @@ public class Box {
     private int id;
     private String name;
     private String description;
-    private String folder_name;
-    private String absolut_path;
     //Relationship between tables
     private ArrayList<Document> documents = new ArrayList<Document>();
     private int account_id;
@@ -43,22 +41,6 @@ public class Box {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getFolder_name() {
-        return folder_name;
-    }
-
-    public void setFolder_name(String folder_name) {
-        this.folder_name = folder_name;
-    }
-
-    public String getAbsolut_path() {
-        return absolut_path;
-    }
-
-    public void setAbsolut_path(String absolut_path) {
-        this.absolut_path = absolut_path;
     }
 
     public ArrayList<Document> getDocuments() {

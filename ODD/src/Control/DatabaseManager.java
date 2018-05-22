@@ -32,8 +32,6 @@ public class DatabaseManager {
             + "(accId bigint auto_increment NOT NULL PRIMARY KEY, "
             + " accName VARCHAR(255),"
             + " accPhoto BLOB, "
-            + " accFolderName TEXT, "
-            + " accAbsoluthPath TEXT,"
             + " accLogin TEXT,"
             + " accPassword TEXT);"
             + " "
@@ -41,8 +39,6 @@ public class DatabaseManager {
             + "(docId bigint auto_increment NOT NULL PRIMARY KEY,"
             + "docName TEXT,"
             + "docType VARCHAR(50),"
-            + "docFileName TEXT,"
-            + "docAbsoluthPath TEXT,"
             + "doc_accId bigint,"
             + "doc_boxId bigint);"
             + " "
@@ -50,8 +46,6 @@ public class DatabaseManager {
             + "(boxId bigint auto_increment NOT NULL PRIMARY KEY,"
             + "boxName VARCHAR(50),"
             + "boxDescription TEXT,"
-            + "boxFolderName TEXT,"
-            + "boxAbsoluthPath TEXT,"
             + "box_accId bigint);";
 
     public DatabaseManager() {
@@ -72,12 +66,10 @@ public class DatabaseManager {
     public boolean addAccount(Account acc) {
         boolean boo = false;
         try {
-            String sql = "INSERT INTO account (accName, accPhoto, accFolderName, accAbsoluthPath, accLogin, accPassword) "
+            String sql = "INSERT INTO account (accName, accPhoto, accLogin, accPassword) "
                     + "VALUES "
                     + "('" + acc.getName() + "',"
                     + "FILE_READ('" + acc.getPhotoPath() + "'),"
-                    + "'" + acc.getFolder_name() + "',"
-                    + "'" + acc.getAbsolut_path() + "',"
                     + "'" + acc.getLogin() + "',"
                     + "'" + acc.getPassword() + "'"
                     + ");";
@@ -104,8 +96,6 @@ public class DatabaseManager {
                 acc.setName(rs.getString("accName"));
                 acc.setPassword(rs.getString("accPassword"));
                 acc.setPhoto(rs.getBlob("accPhoto"));
-                acc.setFolder_name(rs.getString("accFolderName"));
-                acc.setAbsolut_path(rs.getString("accAbsoluthPath"));
                 acc.setLogin(rs.getString("accLogin"));
                 accs.add(acc);
             }
@@ -129,7 +119,6 @@ public class DatabaseManager {
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(count);
         return count;
     }
 
@@ -162,8 +151,6 @@ public class DatabaseManager {
                 acc.setName(rs.getString("accName"));
                 acc.setPassword(rs.getString("accPassword"));
                 acc.setPhoto(rs.getBlob("accPhoto"));
-                acc.setFolder_name(rs.getString("accFolderName"));
-                acc.setAbsolut_path(rs.getString("accAbsoluthPath"));
                 acc.setLogin(rs.getString("accLogin"));
             }
         } catch (SQLException ex) {
@@ -184,8 +171,6 @@ public class DatabaseManager {
                 acc.setName(rs.getString("accName"));
                 acc.setPassword(rs.getString("accPassword"));
                 acc.setPhoto(rs.getBlob("accPhoto"));
-                acc.setFolder_name(rs.getString("accFolderName"));
-                acc.setAbsolut_path(rs.getString("accAbsoluthPath"));
                 acc.setLogin(rs.getString("accLogin"));
             }
         } catch (SQLException ex) {
@@ -197,35 +182,85 @@ public class DatabaseManager {
     public boolean addBox(Box box) {
         boolean boo = false;
         try {
-            String sql = "INSERT INTO box (boxName, boxDescription, boxFolderName, boxAbsoluthPath, box_boxId) "
+            String sql = "INSERT INTO box (boxName, boxDescription, box_accId) "
                     + "VALUES "
                     + "('" + box.getName() + "',"
                     + "'" + box.getDescription() + "',"
-                    + "'" + box.getFolder_name() + "',"
-                    + "'" + box.getAbsolut_path() + "',"
-                    + "" + box.getAccount_id() + ""
+                    + "'" + box.getAccount_id() + "'"
                     + ");";
             stmt.execute(sql);
-            Warnings.wrngBoxAccountSuccess();
         } catch (SQLException ex) {
             boo = true;
-            Warnings.wrngAddBoxFail();
             ex.printStackTrace();
         }
 
         if ((box.getDocuments().size() != 0) && (boo == false)) {
-            //boo = this.relationBoxDoc(box);
+            boo = this.createRalationBoxDoc(box);
+        }
+
+        if (boo == false) {
+            Warnings.wrngBoxAccountSuccess();
+        } else {
+            Warnings.wrngAddBoxFail();
         }
 
         return boo;
     }
-    
+
+    boolean deleteBox(int id) {
+        boolean boo = false;
+        try {
+            String sql = "DELETE FROM box WHERE boxId = '"+id+"';";
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            boo = true;
+            ex.printStackTrace();
+        }
+        
+        return boo;
+    }
+
+    private boolean createRalationBoxDoc(Box box) {
+        ArrayList<Box> boxes = new DatabaseManager().listBoxByIdAcc(box.getAccount_id());
+        Box tBox = new Box();
+        Document tDoc = new Document();
+
+        for (Box bx : boxes) {
+            if (bx.getName().equals(box.getName()) && bx.getDescription().equals(box.getDescription())) {
+                tBox = bx;
+            }
+        }
+        boolean boo = false;
+        for (Document doc : box.getDocuments()) {
+            DatabaseManager dbm = new DatabaseManager();
+            if (dbm.makeRalationBoxDoc(tBox, doc) == true) {
+                boo = true;
+            }
+        }
+
+        return boo;
+    }
+
+    private boolean makeRalationBoxDoc(Box tBox, Document doc) {
+        boolean boo = false;
+        try {
+            String sql = "UPDATE document "
+                    + "SET doc_boxId = " + tBox.getId() + " "
+                    + "WHERE docId = " + doc.getId() + ";";
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            boo = true;
+            ex.printStackTrace();
+        }
+        return boo;
+    }
+
     public ArrayList<Box> listBoxByIdAcc(int id) {
         ArrayList<Box> boxes = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM box WHERE box_accId = "+id+";";
-            
+            String sql = "SELECT * FROM box WHERE box_accId = " + id + ";";
+
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
@@ -233,9 +268,7 @@ public class DatabaseManager {
                 box.setId(rs.getInt("boxId"));
                 box.setName(rs.getString("boxName"));
                 box.setDescription(rs.getString("boxDescription"));
-                box.setFolder_name(rs.getString("boxFolderName"));
-                box.setAbsolut_path(rs.getString("boxAbsoluthPath"));
-                box.setDocuments(new DatabaseManager().getDocumentsByBoxId(box.getId(), id));
+                box.setDocuments(new DatabaseManager().getDocumentsByBoxId(box.getId()));
                 box.setAccount_id(id);
                 boxes.add(box);
             }
@@ -244,24 +277,21 @@ public class DatabaseManager {
         }
         return boxes;
     }
-    
-    public ArrayList<Document> getDocumentsByBoxId(int id, int accId) {
+
+    public ArrayList<Document> getDocumentsByBoxId(int id) {
         ArrayList<Document> docs = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM document WHERE doc_boxId = "+id+";";
-
+            String sql = "SELECT * FROM document WHERE doc_boxId = " + id + ";";
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
                 Document doc = new Document();
                 doc.setId(rs.getInt("docId"));
                 doc.setName(rs.getString("docName"));
-                doc.setName(rs.getString("docType"));
-                doc.setFile_name(rs.getString("docFileName"));
-                doc.setAbsolut_path(rs.getString("docAbsoluthPath"));
-                doc.setBox_id(id);
-                doc.setAccount_id(accId);
+                doc.setType(rs.getString("docType"));
+                doc.setBox_id(rs.getInt("doc_boxId"));
+                doc.setAccount_id(rs.getInt("doc_accId"));
                 docs.add(doc);
             }
         } catch (SQLException ex) {
@@ -270,10 +300,57 @@ public class DatabaseManager {
         return docs;
     }
 
-     /*   private boolean relationBoxDoc(Box box) {
+    public boolean addDocument(Document doc) {
+        boolean boo = false;
+        try {
+            String sql = "INSERT INTO document (docName, docType, doc_accId, doc_boxId)"
+                    + " VALUES("
+                    + "'" + doc.getName() + "',"
+                    + "'" + doc.getType() + "',"
+                    + "'" + doc.getAccount_id() + "'";
+            if (doc.getBox_id() != 0) {
+                sql += ", '" + doc.getBox_id() + "'";
+            } else {
+
+                sql += ", '0'";
+            }
+
+            sql += ");";
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            boo = true;
+            ex.printStackTrace();
+        }
+        return boo;
+    }
+
+    public ArrayList<Document> listDocsByAccIdToAddBox(int id) {
+        ArrayList<Document> docs = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM document WHERE doc_accId = " + id + " AND doc_boxId = 0;";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                Document doc = new Document();
+                doc.setId(rs.getInt("docId"));
+                doc.setName(rs.getString("docName"));
+                doc.setType(rs.getString("docType"));
+                doc.setBox_id(rs.getInt("doc_boxId"));
+                doc.setAccount_id(rs.getInt("doc_accId"));
+                docs.add(doc);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return docs;
+    }
+
+    /*   private boolean relationBoxDoc(Box box) {
             
     }*/
-    /*
+ /*
     
     (boxId bigint auto_increment NOT NULL PRIMARY KEY,"
             + "boxName VARCHAR(50),"
@@ -334,14 +411,14 @@ public class DatabaseManager {
             System.out.println(ex);
         }
     }
+
     public void drop() {
         try {
-            String sql = "DROP SCHEMA oddSystem;";
+            String sql = "DROP ALL OBJECTS";
             stmt.execute(sql);
         } catch (SQLException ex) {
             System.out.println(ex);
         }
     }
 
-    
 }
