@@ -16,6 +16,16 @@ public class Document {
     //Relationship between tables   
     private int box_id;
     private int account_id;
+    
+    private Box box; 
+
+    public Box getBox() {
+        return box;
+    }
+
+    public void setBox(Box box) {
+        this.box = box;
+    }
 
     public int getId() {
         return id;

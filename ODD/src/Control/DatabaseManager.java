@@ -277,6 +277,26 @@ public class DatabaseManager {
         }
         return boxes;
     }
+    
+    private Box getBoxById(int box_id) {
+        Box box = new Box();
+
+        try {
+            String sql = "SELECT * FROM box WHERE boxId = " + box_id + ";";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                box.setId(rs.getInt("boxId"));
+                box.setName(rs.getString("boxName"));
+                box.setDescription(rs.getString("boxDescription"));
+                box.setAccount_id(rs.getInt("box_accId"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return box;
+    }
 
     public ArrayList<Document> getDocumentsByBoxId(int id) {
         ArrayList<Document> docs = new ArrayList<>();
@@ -345,6 +365,43 @@ public class DatabaseManager {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return docs;
+    }
+    
+    ArrayList<Document> listDocsByAccId(int id) {
+        ArrayList<Document> docs = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM document WHERE doc_accId = " + id + ";";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                Document doc = new Document();
+                doc.setId(rs.getInt("docId"));
+                doc.setName(rs.getString("docName"));
+                doc.setType(rs.getString("docType"));
+                doc.setBox_id(rs.getInt("doc_boxId"));
+                doc.setAccount_id(rs.getInt("doc_accId"));
+                doc.setBox(new DatabaseManager().getBoxById(doc.getBox_id()));
+                docs.add(doc);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return docs;
+    }
+    
+    public boolean deleteDocument(int id) {
+        boolean boo = false;
+        try {
+            String sql = "DELETE FROM document WHERE docId = '"+id+"';";
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            boo = true;
+            ex.printStackTrace();
+        }
+        
+        return boo;
     }
 
     /*   private boolean relationBoxDoc(Box box) {
@@ -420,5 +477,11 @@ public class DatabaseManager {
             System.out.println(ex);
         }
     }
+
+    
+
+    
+
+    
 
 }

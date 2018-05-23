@@ -114,6 +114,11 @@ public class FRMMain extends javax.swing.JFrame {
 
         MIListDocs.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         MIListDocs.setText("List Documents");
+        MIListDocs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MIListDocsActionPerformed(evt);
+            }
+        });
         PUMDocs.add(MIListDocs);
 
         PUMDocs.getAccessibleContext().setAccessibleParent(BTNDocuments);
@@ -487,6 +492,21 @@ public class FRMMain extends javax.swing.JFrame {
         }
         ad.show();
     }//GEN-LAST:event_MIAddDocActionPerformed
+
+    private void MIListDocsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MIListDocsActionPerformed
+        IFRMListDocument ld = new IFRMListDocument(this.acc.getId());
+        setRootPaneCheckingEnabled(false);
+        javax.swing.plaf.InternalFrameUI ifu = ld.getUI();
+        ((javax.swing.plaf.basic.BasicInternalFrameUI) ifu).setNorthPane(null);
+        DTPNLMain.removeAll();
+        DTPNLMain.add(ld);
+        try {
+            ld.setMaximum(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ld.show();
+    }//GEN-LAST:event_MIListDocsActionPerformed
 
     /**
      * @param args the command line arguments

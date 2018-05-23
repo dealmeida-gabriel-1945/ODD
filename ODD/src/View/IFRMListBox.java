@@ -7,11 +7,16 @@ package View;
 
 import Control.AccountControl;
 import Control.BoxControl;
+import Control.Functions;
 import Control.Warnings;
 import Model.Account;
 import Model.Box;
 import Model.Document;
+import com.itextpdf.text.DocumentException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -50,8 +55,8 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         TBLBoxes = new javax.swing.JTable();
         PNLOptions = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        BTNEdit = new javax.swing.JButton();
+        BTNOptions = new javax.swing.JButton();
         BTNDelete = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -106,19 +111,19 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
 
         PNLOptions.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jButton1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jButton1.setText("Edit");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        BTNEdit.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        BTNEdit.setText("Edit");
+        BTNEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BTNEditActionPerformed(evt);
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jButton2.setText("Generate PDF");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        BTNOptions.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        BTNOptions.setText("Options");
+        BTNOptions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                BTNOptionsActionPerformed(evt);
             }
         });
 
@@ -130,10 +135,13 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel1.setText("Id:");
 
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel2.setText("Name:");
 
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel3.setText("Description:");
 
         TFShowId.setEditable(false);
@@ -155,8 +163,8 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
             .addGroup(PNLOptionsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(PNLOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(BTNOptions, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(BTNEdit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
                     .addComponent(BTNDelete, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
                     .addGroup(PNLOptionsLayout.createSequentialGroup()
                         .addGroup(PNLOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -188,9 +196,9 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(BTNOptions)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(BTNEdit)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(BTNDelete)
                 .addContainerGap())
@@ -281,37 +289,82 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_TBLBoxesMouseClicked
 
     private void BTNDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNDeleteActionPerformed
-        if (boxClicked.getDocuments().size() != 0) {
-            Warnings.wrngCannotDeleteBoxCauseDocs();
-        } else {
-            if (Warnings.wrngConfirmDelete() == 0) {
-                if (Warnings.wrngTypeYourPassword().equals(this.acc.getPassword())) {
-                    if (BoxControl.deleteBox(boxClicked.getId()) == false) {
-                        Warnings.wrngDeleteDocumentSuccess();
-                        this.restart();
+        if (boxClicked.getId() > 0) {
+            if (boxClicked.getDocuments().size() != 0) {
+                Warnings.wrngCannotDeleteBoxCauseDocs();
+            } else {
+                if (Warnings.wrngConfirmDelete() == 0) {
+                    if (Warnings.wrngTypeYourPassword().equals(this.acc.getPassword())) {
+                        if (BoxControl.deleteBox(boxClicked.getId()) == false) {
+                            Warnings.wrngDeleteDocumentSuccess();
+                            this.restart();
+                        } else {
+                            Warnings.wrngDeleteDocumentFail();
+                        }
                     } else {
-                        Warnings.wrngDeleteDocumentFail();
+                        Warnings.wrngIncorrectPassword();
                     }
                 } else {
-                    Warnings.wrngIncorrectPassword();
-                }
-            } else {
 
+                }
             }
+        } else {
+            Warnings.wrngNoSelection();
         }
     }//GEN-LAST:event_BTNDeleteActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void BTNEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNEditActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_BTNEditActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void BTNOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNOptionsActionPerformed
+        ArrayList<Boolean> boos = Warnings.wrngOptions();
+        if (boos.get(0)) {
+            if (boxClicked.getId() > 0) {
+                try {
+                    Functions.generatePDFCapeToBox(acc, boxClicked);
+                } catch (FileNotFoundException ex) {
+                    Warnings.wrngSomethingWentWrong(ex);
+                } catch (DocumentException ex) {
+                    Warnings.wrngSomethingWentWrong(ex);
+                }
+            } else {
+                Warnings.wrngNoSelection();
+            }
+        }
+        if (boos.get(1)) {
+            if (boxClicked.getId() > 0) {
+                try {
+                    Functions.generatePDFToBoxsDocments(acc, boxClicked);
+                } catch (FileNotFoundException ex) {
+                    Warnings.wrngSomethingWentWrong(ex);
+                } catch (DocumentException ex) {
+                    Warnings.wrngSomethingWentWrong(ex);
+                }
+            } else {
+                Warnings.wrngNoSelection();
+            }
+        }
+        if (boos.get(2)) {
+            if (boxes.size()!=0) {
+                try {
+                    Functions.generatePDFAllBoxs(boxes, acc);
+                } catch (FileNotFoundException ex) {
+                    Warnings.wrngSomethingWentWrong(ex);
+                } catch (DocumentException ex) {
+                    Warnings.wrngSomethingWentWrong(ex);
+                }
+            } else {
+                Warnings.wrngNoBoxes();
+            }
+        }
+    }//GEN-LAST:event_BTNOptionsActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTNDelete;
+    private javax.swing.JButton BTNEdit;
+    private javax.swing.JButton BTNOptions;
     private javax.swing.JPanel PNLDocsIn;
     private javax.swing.JPanel PNLMain;
     private javax.swing.JPanel PNLOptions;
@@ -320,8 +373,6 @@ public class IFRMListBox extends javax.swing.JInternalFrame {
     private javax.swing.JTextArea TFShowDescription;
     private javax.swing.JTextField TFShowId;
     private javax.swing.JTextField TFShowName;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
